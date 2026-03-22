@@ -42,7 +42,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hengchengyu/react-koi-pond"
+    "url": "https://github.com/handchan/react-koi-pond"
   },
   "sideEffects": false
 }
