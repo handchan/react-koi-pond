@@ -913,13 +913,14 @@ export function KoiPond({
       const sorted = [...state.fish].sort((a, b) => a.y - b.y);
       for (const f of sorted) {
         ctx.save();
-        ctx.globalAlpha = 0.1;
+        ctx.globalAlpha = 0.15;
+        ctx.filter = "blur(6px)";
         ctx.beginPath();
         ctx.ellipse(
-          f.x + 4,
-          f.y + 6,
-          f.length * 0.38,
-          f.maxHW * 0.7,
+          f.x + 3,
+          f.y + 4,
+          f.length * 0.15,
+          f.maxHW * 0.8,
           f.heading,
           0,
           Math.PI * 2
