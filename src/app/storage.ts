@@ -275,7 +275,10 @@ export function useFishroom() {
   const setRoom = useCallback((points: Pt[]) => {
     setState((s) => ({
       ...s,
-      room: points.length >= 3 ? { points } : undefined,
+      // Keep partial point lists while drawing so corners can be added one at a
+      // time; an empty list clears the room. (Validity for export is enforced
+      // separately — see contract.ts.)
+      room: points.length > 0 ? { points } : undefined,
     }));
   }, []);
 

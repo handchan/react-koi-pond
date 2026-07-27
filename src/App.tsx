@@ -220,7 +220,11 @@ export default function App() {
             ) : (
               <div className="room-tools">
                 <span className="room-tip">
-                  Tap to add corners · drag dots to shape the room
+                  {roomPts.length === 0
+                    ? "Tap anywhere in the map to drop the first corner"
+                    : roomPts.length < 3
+                    ? `Tap to add corners — ${3 - roomPts.length} more for a room`
+                    : "Drag dots to shape · tap to add more corners"}
                 </span>
                 <div className="room-tool-btns">
                   <button
@@ -235,7 +239,14 @@ export default function App() {
                   >
                     Clear
                   </button>
-                  <button className="done" onClick={() => setEditRoom(false)}>
+                  <button
+                    className="done"
+                    onClick={() => {
+                      // Discard an unfinished outline (needs ≥3 corners).
+                      if (roomPts.length < 3) fr.setRoom([]);
+                      setEditRoom(false);
+                    }}
+                  >
                     Done
                   </button>
                 </div>
