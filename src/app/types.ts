@@ -87,4 +87,6 @@ export interface AppState {
   tanks: Tank[];
   reminders: ReminderSettings;
   sync?: SyncSettings;
+  /** Multiplier for map icon sizes (0.6–1.8). Defaults to 1. */
+  nodeScale?: number;
 }

@@ -290,6 +290,10 @@ export function useFishroom() {
     setState((s) => ({ ...s, sync }));
   }, []);
 
+  const setNodeScale = useCallback((nodeScale: number) => {
+    setState((s) => ({ ...s, nodeScale }));
+  }, []);
+
   const replaceState = useCallback((next: AppState) => {
     setState({
       ...next,
@@ -310,6 +314,7 @@ export function useFishroom() {
     setRoom,
     setReminders,
     setSync,
+    setNodeScale,
     replaceState,
   };
 }

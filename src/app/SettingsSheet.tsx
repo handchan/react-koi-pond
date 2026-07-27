@@ -14,6 +14,8 @@ interface Props {
   onRemindersChange: (s: ReminderSettings) => void;
   state: AppState;
   onImport: (s: AppState) => void;
+  nodeScale: number;
+  onNodeScaleChange: (n: number) => void;
   sync: UseSync;
   syncPrefs: SyncSettings;
   onSyncPrefsChange: (s: SyncSettings) => void;
@@ -25,6 +27,8 @@ export default function SettingsSheet({
   onRemindersChange,
   state,
   onImport,
+  nodeScale,
+  onNodeScaleChange,
   sync,
   syncPrefs,
   onSyncPrefsChange,
@@ -83,8 +87,30 @@ export default function SettingsSheet({
         </div>
 
         <div className="sheet-body">
+          {/* ---------- Map ---------- */}
+          <div className="section-title" style={{ marginTop: 4 }}>
+            Map
+          </div>
+          <div className="field">
+            <label>Icon size — {Math.round(nodeScale * 100)}%</label>
+            <input
+              type="range"
+              className="slider"
+              min={0.6}
+              max={1.8}
+              step={0.1}
+              value={nodeScale}
+              onChange={(e) => onNodeScaleChange(Number(e.target.value))}
+            />
+            <div className="setting-sub">
+              Scales the tank/rack icons on the fishroom map.
+            </div>
+          </div>
+
           {/* ---------- Reminders ---------- */}
-          <div className="section-title">Reminders</div>
+          <div className="section-title" style={{ marginTop: 22 }}>
+            Reminders
+          </div>
           {!supported && (
             <p className="note warn">
               This browser doesn't support notifications. On iPhone, add Fishroom

@@ -22,6 +22,7 @@ export default function App() {
   const [view, setView] = useState<View>("map");
   const [editing, setEditing] = useState<Editing | null>(null);
   const [openStackId, setOpenStackId] = useState<string | null>(null);
+  const [selectedStackId, setSelectedStackId] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [editRoom, setEditRoom] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -87,6 +88,40 @@ export default function App() {
       flash(`🍤 Fed all ${tanks.length} tanks`);
     }
   }
+
+  // Backspace / Delete removes the rack selected on the map.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Backspace" && e.key !== "Delete") return;
+      // Never hijack the key while typing or with a sheet open.
+      const el = document.activeElement as HTMLElement | null;
+      if (
+        el &&
+        (el.tagName === "INPUT" ||
+          el.tagName === "TEXTAREA" ||
+          el.tagName === "SELECT" ||
+          el.isContentEditable)
+      )
+        return;
+      if (editing || openStackId || showSettings || editRoom) return;
+      if (!selectedStackId) return;
+
+      const members = stackMembers(tanks, selectedStackId);
+      if (members.length === 0) return;
+      e.preventDefault();
+      const what =
+        members.length === 1
+          ? `"${members[0].name}"`
+          : `this rack and its ${members.length} tanks`;
+      if (window.confirm(`Delete ${what}? This can't be undone.`)) {
+        members.forEach((t) => fr.removeTank(t.id));
+        setSelectedStackId(null);
+        flash(members.length === 1 ? "Tank deleted" : "Rack deleted");
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedStackId, tanks, editing, openStackId, showSettings, editRoom, fr]);
 
   // Re-read the edited tank from state so history reflects quick logs.
   const liveEditing: Editing | null = editing
@@ -202,6 +237,9 @@ export default function App() {
                 room={room}
                 now={now}
                 editRoom={editRoom}
+                nodeScale={fr.state.nodeScale ?? 1}
+                selectedStackId={selectedStackId}
+                onSelectStack={setSelectedStackId}
                 onOpenStack={(s) => setOpenStackId(s.id)}
                 onMoveStack={fr.moveStack}
                 onRoomChange={fr.setRoom}
@@ -353,6 +391,8 @@ export default function App() {
             setShowSettings(false);
             flash("✓ Data imported");
           }}
+          nodeScale={fr.state.nodeScale ?? 1}
+          onNodeScaleChange={fr.setNodeScale}
           sync={sync}
           syncPrefs={fr.state.sync ?? { slug: "", publish: false }}
           onSyncPrefsChange={fr.setSync}
